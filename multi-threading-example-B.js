@@ -1,17 +1,24 @@
 const express = require("express");
-
 const app = express();
 const port = process.env.PORT || 3000;
+
+function calculateCount() {
+  return new Promise((resolve, reject) => {
+    let counter = 0;
+    for (let i = 0; i < 15_000_000_000; i++) {
+      counter++;
+    }
+    resolve(counter);
+  });
+}
 
 app.get("/non-blocking/", (req, res) => {
   res.status(200).send("This page is non-blocking");
 });
 
-app.get("/blocking", async (req, res) => {
+app.get("/count", async (req, res) => {
   let counter = 0;
-  for (let i = 0; i < 10_000_000_000; i++) {
-    counter++;
-  }
+  counter = await calculateCount();
   res.status(200).send(`result is ${counter}`);
 });
 
